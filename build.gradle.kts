@@ -1,37 +1,39 @@
 plugins {
-	java
-	id("org.springframework.boot") version "3.5.5"
-	id("io.spring.dependency-management") version "1.1.7"
+    id("java")
+    id("checkstyle")
+    id("maven-publish")
 }
 
-group = "br.com.dio"
-version = "0.0.1-SNAPSHOT"
-description = "Gestor de pedidos "
+allprojects {
+    group = "br.com.dio"
+    version = "1.0"
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    repositories {
+        mavenCentral()
+    }
 }
 
-configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
-}
+subprojects {
+    apply(plugin = "java")
+    apply(plugin = "maven-publish")
 
-repositories {
-	mavenCentral()
-}
 
-dependencies {
-	implementation("org.springframework.boot:spring-boot-starter")
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-}
+    configurations {
+        compileOnly {
+            extendsFrom(configurations.annotationProcessor.get())
+        }
+    }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+    dependencies {
+        compileOnly("org.projectlombok:lombok:1.18.32")
+        annotationProcessor("org.projectlombok:lombok:1.18.32")
+
+        "testImplementation"(platform("org.junit:junit-bom:5.10.0"))
+        "testImplementation"("org.junit.jupiter:junit-jupiter")
+        "testRuntimeOnly"("org.junit.platform:junit-platform-launcher")
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
 }
